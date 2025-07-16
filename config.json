@@ -1,0 +1,11 @@
+{
+    "repos": {
+        "STARSYSONE/billingcenter": "BC",
+        "STARSYSONE/policycenter": "PC",
+        "STARSYSONE/claimcenter": "CC",
+        "STARSYSONE/contactmanager": "CM"
+    },
+    "fix_version": "Mobilitas 2025.06.13",
+    "release_branch": "release/r-53.0",
+    "develop_branch": "develop"
+}
