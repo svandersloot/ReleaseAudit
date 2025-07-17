@@ -4,7 +4,12 @@ import logging
 from pathlib import Path
 from typing import Dict
 
-from dotenv import load_dotenv
+try:
+    from dotenv import load_dotenv
+except ImportError as exc:
+    raise ImportError(
+        "python-dotenv is required. Install dependencies with 'pip install -r requirements.txt'"
+    ) from exc
 
 logger = logging.getLogger(__name__)
 

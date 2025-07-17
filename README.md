@@ -5,10 +5,12 @@ This tool compares Jira issues exported to Excel against Bitbucket commit histor
 ## Setup
 
 1. Create a Python 3.9 environment.
-2. Install dependencies:
+2. Install dependencies (including `python-dotenv`):
    ```bash
    pip install -r requirements.txt
    ```
+   If you see `ModuleNotFoundError: No module named 'dotenv'`, it means the
+   dependencies were not installed correctly.
 3. Copy `.env.example` to `.env` and fill in your Bitbucket credentials.
 4. Optionally adjust `config.json` to list repositories and branches.
 
