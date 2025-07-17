@@ -26,6 +26,11 @@ CSV files can be provided in the same way:
 ```bash
 python main.py --jira-excel path/to/jira.csv
 ```
+If your file name contains spaces, wrap it in quotes:
+```bash
+python main.py --jira-excel "Release Audit.csv"
+```
+Ensure you run `main.py` as the script (the `.csv` file should be passed with `--jira-excel`).
 
 Additional options:
 

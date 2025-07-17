@@ -1,6 +1,7 @@
 import argparse
 import logging
 import os
+import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -17,8 +18,20 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Compare Jira issues against Bitbucket commits")
-    parser.add_argument("--jira-excel", required=True, help="Path to exported Jira Excel or CSV file")
+    # If the user accidentally runs a CSV/XLSX file as the Python script
+    if len(sys.argv) > 1 and sys.argv[1].lower().endswith((".csv", ".xlsx")):
+        print(
+            "It looks like you tried to run a data file as the script. "
+            "Run:\n  python main.py --jira-excel \"%s\"" % sys.argv[1]
+        )
+        sys.exit(1)
+
+    parser = argparse.ArgumentParser(
+        description="Compare Jira issues against Bitbucket commits"
+    )
+    parser.add_argument(
+        "--jira-excel", required=True, help="Path to exported Jira Excel or CSV file"
+    )
     parser.add_argument("--config", default="config.json", help="Path to JSON config file")
     parser.add_argument("--develop-branch", help="Develop branch name override")
     parser.add_argument("--release-branch", help="Release branch name override")
