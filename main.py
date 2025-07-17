@@ -35,12 +35,28 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--config", default="config.json", help="Path to JSON config file")
     parser.add_argument("--develop-branch", help="Develop branch name override")
     parser.add_argument("--release-branch", help="Release branch name override")
+
+    branch_group = parser.add_mutually_exclusive_group()
+    branch_group.add_argument(
+        "--develop-only",
+        action="store_true",
+        help="Process only the develop branch",
+    )
+    branch_group.add_argument(
+        "--release-only",
+        action="store_true",
+        help="Process only the release branch",
+    )
     return parser.parse_args()
 
 
 def build_branches(args, config: Dict[str, str]) -> List[str]:
     develop = args.develop_branch or config.get("develop_branch", "develop")
     release = args.release_branch or config.get("release_branch", "release")
+    if args.develop_only:
+        return [develop]
+    if args.release_only:
+        return [release]
     return [develop, release]
 
 
@@ -95,6 +111,7 @@ def main() -> None:
     repos = config.get("repos", {})
     develop_branch = args.develop_branch or config.get("develop_branch", "develop")
     release_branch = args.release_branch or config.get("release_branch", "release")
+    branches = build_branches(args, config)
     fix_version = config.get("fix_version", "")
     base_url = os.getenv(
         "BITBUCKET_BASE_URL",
@@ -123,7 +140,7 @@ def main() -> None:
                 process_repo,
                 repo_name,
                 app_name,
-                [develop_branch, release_branch],
+                branches,
                 {
                     "bitbucket_base_url": base_url,
                     "fix_version": fix_version,

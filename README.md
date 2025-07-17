@@ -24,6 +24,14 @@ Run the tool:
 ```bash
 python main.py --jira-excel path/to/jira.xlsx
 ```
+Only process the release branch:
+```bash
+python main.py --jira-excel path/to/jira.xlsx --release-only
+```
+Only process the develop branch:
+```bash
+python main.py --jira-excel path/to/jira.xlsx --develop-only
+```
 CSV files can be provided in the same way:
 ```bash
 python main.py --jira-excel path/to/jira.csv
@@ -38,6 +46,8 @@ Additional options:
 
 - `--develop-branch` specify a different develop branch.
 - `--release-branch` specify a different release branch.
+- `--develop-only` process only the develop branch.
+- `--release-only` process only the release branch.
 - `--config` path to configuration JSON.
 
 The script outputs an Excel report `gitxjira_report_<timestamp>.xlsx` with Jira stories, commit details, and any stories missing from Git.
