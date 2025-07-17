@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import logging
 from typing import Dict
@@ -40,6 +41,7 @@ def load_jira_excel(path: str) -> Dict[str, dict]:
     if missing:
         raise ValueError(f"Excel missing required columns: {', '.join(missing)}")
 
+    jira_base = os.getenv("JIRA_BASE_URL", "https://csaaig.atlassian.net/browse")
     stories = {}
     for _, row in df.iterrows():
         key = str(row[key_col]).strip().upper()
@@ -49,7 +51,7 @@ def load_jira_excel(path: str) -> Dict[str, dict]:
             "Summary": row.get("summary", ""),
             "App": row.get("components", ""),
             "FixVersion": row.get("fix_versions", ""),
-            "Link": f"https://jira.example.com/browse/{key}",
+            "Link": f"{jira_base.rstrip('/')}/{key}",
         }
     logger.info("Loaded %d Jira issues", len(stories))
     return stories

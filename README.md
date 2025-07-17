@@ -13,7 +13,9 @@ This tool compares Jira issues exported to Excel against Bitbucket commit histor
 3. Copy `.env.example` to `.env` and fill in your Bitbucket credentials.
 4. Set `BITBUCKET_BASE_URL` in `.env` if your Bitbucket host differs from the
    default (`https://bitbucket.example.com/rest/api/1.0`).
-5. Optionally adjust `config.json` to list repositories and branches.
+5. Optionally set `JIRA_BASE_URL` for links to your Jira instance. The default
+   is `https://csaaig.atlassian.net/browse`.
+6. Optionally adjust `config.json` to list repositories and branches.
 
 ## Usage
 
