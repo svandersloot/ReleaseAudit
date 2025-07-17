@@ -45,10 +45,10 @@ def load_jira_excel(path: str) -> Dict[str, dict]:
         key = str(row[key_col]).strip().upper()
         stories[key] = {
             "Jira Story": key,
-            "Issue Type": row.get("issue_type", ""),
+            "IssueType": row.get("issue_type", ""),
             "Summary": row.get("summary", ""),
             "App": row.get("components", ""),
-            "Fix Version": row.get("fix_versions", ""),
+            "FixVersion": row.get("fix_versions", ""),
             "Link": f"https://jira.example.com/browse/{key}",
         }
     logger.info("Loaded %d Jira issues", len(stories))
