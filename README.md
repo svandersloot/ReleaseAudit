@@ -11,7 +11,9 @@ This tool compares Jira issues exported to Excel against Bitbucket commit histor
    ```
    The script will attempt this automatically if modules are missing.
 3. Copy `.env.example` to `.env` and fill in your Bitbucket credentials.
-4. Optionally adjust `config.json` to list repositories and branches.
+4. Set `BITBUCKET_BASE_URL` in `.env` if your Bitbucket host differs from the
+   default (`https://bitbucket.example.com/rest/api/1.0`).
+5. Optionally adjust `config.json` to list repositories and branches.
 
 ## Usage
 

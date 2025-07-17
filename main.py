@@ -96,7 +96,10 @@ def main() -> None:
     develop_branch = args.develop_branch or config.get("develop_branch", "develop")
     release_branch = args.release_branch or config.get("release_branch", "release")
     fix_version = config.get("fix_version", "")
-    base_url = config.get("bitbucket_base_url", "https://bitbucket.example.com/rest/api/1.0")
+    base_url = os.getenv(
+        "BITBUCKET_BASE_URL",
+        config.get("bitbucket_base_url", "https://bitbucket.example.com/rest/api/1.0"),
+    )
     commit_limit = int(config.get("commit_fetch_limit", 25))
     cutoff_days = int(config.get("cutoff_days_before_code_freeze", 28))
     freeze_days = int(config.get("code_freeze_days_before_release", 17))
