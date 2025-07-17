@@ -18,7 +18,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Compare Jira issues against Bitbucket commits")
-    parser.add_argument("--jira-excel", required=True, help="Path to exported Jira Excel file")
+    parser.add_argument("--jira-excel", required=True, help="Path to exported Jira Excel or CSV file")
     parser.add_argument("--config", default="config.json", help="Path to JSON config file")
     parser.add_argument("--develop-branch", help="Develop branch name override")
     parser.add_argument("--release-branch", help="Release branch name override")

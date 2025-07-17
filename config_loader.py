@@ -6,10 +6,17 @@ from typing import Dict
 
 try:
     from dotenv import load_dotenv
-except ImportError as exc:
-    raise ImportError(
-        "python-dotenv is required. Install dependencies with 'pip install -r requirements.txt'"
-    ) from exc
+except ImportError:
+    import subprocess
+    import sys
+    print("Missing dependencies. Installing from requirements.txt...")
+    try:
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"])
+        from dotenv import load_dotenv
+    except Exception as exc:
+        raise ImportError(
+            "python-dotenv is required. Automatic installation failed. Please run 'pip install -r requirements.txt'"
+        ) from exc
 
 logger = logging.getLogger(__name__)
 

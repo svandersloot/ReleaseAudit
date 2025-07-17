@@ -16,7 +16,10 @@ def load_jira_excel(path: str) -> Dict[str, dict]:
     - Fix version(s)
     """
     try:
-        df = pd.read_excel(path)
+        if path.lower().endswith(".csv"):
+            df = pd.read_csv(path)
+        else:
+            df = pd.read_excel(path)
     except Exception as exc:
         logger.error("Failed to read Jira Excel %s: %s", path, exc)
         raise

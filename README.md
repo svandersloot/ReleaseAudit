@@ -9,19 +9,22 @@ This tool compares Jira issues exported to Excel against Bitbucket commit histor
    ```bash
    pip install -r requirements.txt
    ```
-   If you see `ModuleNotFoundError: No module named 'dotenv'`, it means the
-   dependencies were not installed correctly.
+   The script will attempt this automatically if modules are missing.
 3. Copy `.env.example` to `.env` and fill in your Bitbucket credentials.
 4. Optionally adjust `config.json` to list repositories and branches.
 
 ## Usage
 
-Export issues from Jira as an Excel file (`.xlsx`) containing columns such as *Issue key*, *Summary*, *Issue type*, *Components*, and *Fix version(s)*.
+Export issues from Jira as an Excel file (`.xlsx`) or CSV file containing columns such as *Issue key*, *Summary*, *Issue type*, *Components*, and *Fix version(s)*.
 
 Run the tool:
 
 ```bash
 python main.py --jira-excel path/to/jira.xlsx
+```
+CSV files can be provided in the same way:
+```bash
+python main.py --jira-excel path/to/jira.csv
 ```
 
 Additional options:
