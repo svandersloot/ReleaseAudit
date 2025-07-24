@@ -24,8 +24,13 @@ def write_excel(all_commits, missing_stories_data, output_file):
             )
 
         if missing_stories_data:
-            pd.DataFrame(missing_stories_data).to_excel(
-                writer, sheet_name="Missing Jira Stories", index=False
-            )
+            df = pd.DataFrame(missing_stories_data)
+            if "Status" in df.columns and "App" in df.columns:
+                cols = df.columns.tolist()
+                cols.remove("Status")
+                app_index = cols.index("App")
+                cols.insert(app_index + 1, "Status")
+                df = df[cols]
+            df.to_excel(writer, sheet_name="Missing Jira Stories", index=False)
         else:
             logger.info("No missing Jira stories found or no commits fetched to compare.")

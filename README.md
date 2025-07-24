@@ -1,6 +1,6 @@
-# Git vs Jira Excel Report
+# Git vs Jira Release Audit
 
-This tool compares Jira issues exported to Excel against Bitbucket commit history.
+This tool compares Jira issues retrieved from the Jira Cloud REST API against Bitbucket commit history.
 
 ## Getting Started
 
@@ -39,50 +39,58 @@ This tool compares Jira issues exported to Excel against Bitbucket commit histor
 6. Optionally adjust `config.json` to list repositories and branches.
 7. `commit_fetch_limit` in `config.json` controls how many commits are fetched per API page (default 100).
 
+### ✅ Jira OAuth Setup
+
+1. Visit <https://developer.atlassian.com/console/myapps>
+2. Register a **3LO OAuth App** (Authorization Code Grant)
+3. Set Redirect URL: `http://localhost:8080/callback`
+4. Save the Client ID and Client Secret
+
+### 🚀 One-Time Token Setup
+
+1. Open this browser URL (replace `YOUR_CLIENT_ID`):
+
+   <https://auth.atlassian.com/authorize?audience=api.atlassian.com&client_id=YOUR_CLIENT_ID&scope=read:jira-user%20read:jira-work%20write:jira-work%20offline_access&redirect_uri=http://localhost:8080/callback&state=xyz123&response_type=code&prompt=consent>
+
+2. Approve the app and copy the `code` from the URL
+3. Run `write_jira_token.py` with your:
+   - Client ID
+   - Client Secret
+   - Authorization Code
+
+4. This generates `jira_token.json` and stores it locally.
+
+> 🛡️ **Important**: Do not commit `jira_token.json`. It contains sensitive credentials. It is ignored by `.gitignore`.
+
+#### 🔁 If Token Expires
+
+If `refresh_token` is older than 30 days or fails:
+- Repeat the above process to get a new `code` and generate a new `jira_token.json`
+
 ## Usage
 
-Export issues from Jira as an Excel file (`.xlsx`) or CSV file containing columns such as *Issue key*, *Summary*, *Issue type*, *Components*, and *Fix version(s)*.
+Jira stories are fetched automatically using the fix version defined in `config.json`.
 
 Run the tool (Windows):
 
 ```bat
-run_gitxjira.bat --jira-excel path/to/jira.xlsx
-```
-
-For a guided experience that lets you pick the Jira file and run mode:
-
-Windows:
-```bat
 run_release_audit.bat
-```
-
-macOS/Linux:
-```bash
-./run_gitxjira.command
 ```
 
 Or directly with Python:
 
 ```bash
-python main.py --jira-excel path/to/jira.xlsx
+python main.py
 ```
+
 Only process the release branch:
 ```bash
-python main.py --jira-excel path/to/jira.xlsx --release-only
+python main.py --release-only
 ```
 Only process the develop branch:
 ```bash
-python main.py --jira-excel path/to/jira.xlsx --develop-only
+python main.py --develop-only
 ```
-CSV files can be provided in the same way:
-```bash
-python main.py --jira-excel path/to/jira.csv
-```
-If your file name contains spaces, wrap it in quotes:
-```bash
-python main.py --jira-excel "Release Audit.csv"
-```
-Ensure you run `main.py` as the script (the `.csv` file should be passed with `--jira-excel`).
 
 Additional options:
 
@@ -93,4 +101,10 @@ Additional options:
 - `--config` path to configuration JSON.
 - adjust `commit_fetch_limit` in `config.json` to fetch more commits per page.
 
-The script outputs an Excel report `gitxjira_report_<timestamp>.xlsx` with Jira stories, commit details, and any stories missing from Git.
+The script outputs an Excel report `gitxjira_report_<timestamp>.xlsx` with Jira stories, commit details, and any stories missing from Git. In the "Missing Jira Stories" worksheet the **Status** column appears immediately after **App** so you can quickly see the state of each issue.
+
+## Troubleshooting
+
+* **401/403 errors from Jira** – The access token may have expired. Regenerate `jira_token.json` using the **One-Time Token Setup** steps.
+* **SSL certificate failures** – Ensure you installed the certificate bundle or set `REQUESTS_CA_BUNDLE` to your internal certificate authority file.
+* **No stories returned** – Verify the `fix_version` in `config.json` matches the release in Jira and that your account has permission to read those issues.

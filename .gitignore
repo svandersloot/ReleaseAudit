@@ -11,6 +11,7 @@ __pycache__/
 # Excel reports and data
 *.xlsx
 jira_stories.csv
+jira_token.json
 
 # IDE directories
 .vscode/
