@@ -12,7 +12,7 @@ from tqdm import tqdm
 
 from config_loader import load_config
 from bitbucket_api import fetch_commits
-from excel_loader import load_jira_excel
+from jira_client import load_jira_issues
 from commit_processor import extract_stories
 from excel_writer import write_excel
 
@@ -20,19 +20,8 @@ logger = logging.getLogger(__name__)
 
 
 def parse_args() -> argparse.Namespace:
-    # If the user accidentally runs a CSV/XLSX file as the Python script
-    if len(sys.argv) > 1 and sys.argv[1].lower().endswith((".csv", ".xlsx")):
-        print(
-            "It looks like you tried to run a data file as the script. "
-            "Run:\n  python main.py --jira-excel \"%s\"" % sys.argv[1]
-        )
-        sys.exit(1)
-
     parser = argparse.ArgumentParser(
         description="Compare Jira issues against Bitbucket commits"
-    )
-    parser.add_argument(
-        "--jira-excel", help="Path to exported Jira Excel or CSV file"
     )
     parser.add_argument("--config", default="config.json", help="Path to JSON config file")
     parser.add_argument("--develop-branch", help="Develop branch name override")
@@ -64,12 +53,6 @@ def ensure_directories() -> Tuple[Path, Path]:
     return log_dir, output_dir
 
 
-def prompt_for_jira_file(provided: str | None) -> Path:
-    """Return path to Jira Excel, prompting the user if not provided."""
-    if provided:
-        return Path(provided)
-    user_input = input("Enter path to Jira Excel/CSV export: ").strip()
-    return Path(user_input)
 
 
 def ensure_credentials(env_path: Path) -> Tuple[str, str]:
@@ -182,11 +165,6 @@ def main() -> None:
     config_path = Path(args.config)
     config = load_config(str(config_path))
 
-    jira_path = prompt_for_jira_file(args.jira_excel)
-    if not jira_path.exists():
-        logger.error("Jira Excel file %s not found", jira_path)
-        sys.exit(1)
-
     env_path = config_path.resolve().parent / ".env"
     bitbucket_email, bitbucket_token = ensure_credentials(env_path)
 
@@ -212,8 +190,8 @@ def main() -> None:
     code_freeze_date = release_date - timedelta(days=freeze_days)
     cutoff_date = code_freeze_date - timedelta(days=cutoff_days)
 
-    logger.info("Loading Jira stories...")
-    jira_story_data = load_jira_excel(str(jira_path))
+    logger.info("Loading Jira stories via API...")
+    jira_story_data = load_jira_issues(fix_version)
 
     auth = (bitbucket_email, bitbucket_token)
     headers = {"Accept": "application/json"}
