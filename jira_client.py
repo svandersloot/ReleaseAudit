@@ -51,7 +51,7 @@ def load_jira_issues(fix_version: str, token_file: str = "jira_token.json") -> d
             "jql": jql,
             "startAt": start_at,
             "maxResults": max_results,
-            "fields": "summary,issuetype,fixVersions,components",
+            "fields": "summary,issuetype,fixVersions,components,status",
         }
         response = requests.get(f"{JIRA_API_BASE}/search", headers=headers, params=params)
         response.raise_for_status()
@@ -71,6 +71,7 @@ def load_jira_issues(fix_version: str, token_file: str = "jira_token.json") -> d
             "IssueType": fields.get("issuetype", {}).get("name", ""),
             "Summary": fields.get("summary", ""),
             "App": ", ".join(c.get("name", "") for c in fields.get("components", [])),
+            "Status": fields.get("status", {}).get("name", ""),
             "FixVersion": ", ".join(v.get("name", "") for v in fields.get("fixVersions", [])),
             "Link": f"{jira_base.rstrip('/')}/{key}",
         }
