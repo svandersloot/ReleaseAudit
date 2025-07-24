@@ -101,4 +101,10 @@ Additional options:
 - `--config` path to configuration JSON.
 - adjust `commit_fetch_limit` in `config.json` to fetch more commits per page.
 
-The script outputs an Excel report `gitxjira_report_<timestamp>.xlsx` with Jira stories, commit details, and any stories missing from Git.
+The script outputs an Excel report `gitxjira_report_<timestamp>.xlsx` with Jira stories, commit details, and any stories missing from Git. In the "Missing Jira Stories" worksheet the **Status** column appears immediately after **App** so you can quickly see the state of each issue.
+
+## Troubleshooting
+
+* **401/403 errors from Jira** – The access token may have expired. Regenerate `jira_token.json` using the **One-Time Token Setup** steps.
+* **SSL certificate failures** – Ensure you installed the certificate bundle or set `REQUESTS_CA_BUNDLE` to your internal certificate authority file.
+* **No stories returned** – Verify the `fix_version` in `config.json` matches the release in Jira and that your account has permission to read those issues.
