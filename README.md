@@ -53,14 +53,33 @@ This tool compares Jira issues retrieved from the Jira Cloud REST API against Bi
    <https://auth.atlassian.com/authorize?audience=api.atlassian.com&client_id=YOUR_CLIENT_ID&scope=read:jira-user%20read:jira-work%20write:jira-work%20offline_access&redirect_uri=http://localhost:8080/callback&state=xyz123&response_type=code&prompt=consent>
 
 2. Approve the app and copy the `code` from the URL
-3. Run `write_jira_token.py` with your:
-   - Client ID
-   - Client Secret
-   - Authorization Code
+3. Generate `jira_token.json` by running:
 
-4. This generates `jira_token.json` and stores it locally.
+   ```bash
+   python write_jira_token.py YOUR_CLIENT_ID YOUR_CLIENT_SECRET YOUR_CODE
+   ```
+
+   Use `--redirect-uri` if you specified a custom redirect during the OAuth
+   setup.
+
+4. The script writes `jira_token.json` locally next to your source files.
 
 > 🛡️ **Important**: Do not commit `jira_token.json`. It contains sensitive credentials. It is ignored by `.gitignore`.
+
+### 🖥️ GUI Token Setup
+
+Instead of manually copying the authorization code, you can run a small GUI helper located in `token_generator/`:
+
+```bash
+python token_generator/gui_token_setup.py
+```
+
+Follow the prompts to enter your *Client ID* and *Client Secret*. The tool launches your browser for approval and saves `jira_token.json` automatically. To build a standalone executable use:
+
+```bash
+pyinstaller --onefile token_generator/gui_token_setup.py
+```
+
 
 #### 🔁 If Token Expires
 
